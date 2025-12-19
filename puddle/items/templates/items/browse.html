@@ -1,0 +1,62 @@
+{% extends "core/base.html" %}
+{% block title %} Browse Items {% endblock %}
+
+{% block content %}
+    <div class="pb-6 grid grid-cols-4 gap-4 bg-gray-300">
+        <div class="col-span-1">
+            <form method="get" action="{% url 'items:browse' %}">
+                <input name="query" class="w-full py-4 px-6 
+                border rounded-xl" type="text" value="{{ query}}" 
+                placeholder="What are you looking for?">
+                <button class="mt-4 w-full py-4 px-6 bg-teal-500 
+                hover:bg-teal-700 text-white rounded-xl"> Search</button>
+            </form>
+            <hr class="my-6">
+            <p class="font-semibold"> Categories </p>
+            <ul>
+                {% for category in categories %}
+                 <li class="py-2 px-2 rounded-xl{% if category.id == category_id %} bg-gray-400{% endif %}">
+                    <a href="{% url 'items:browse' %}?query={{ query }}&category={{ category.id }}">
+                     {{ category.name }}
+                    </a>
+                 </li>
+                {% endfor %}
+            </ul>
+
+            <hr class="my-6">
+            <p class="font-semibold"> Clear Filters </p>
+            <ul>
+                <li><a href="{% url 'items:browse' %}"
+                    class="mt-2 py-4 px-8 inline-block bg-yellow-500
+                    text-lg rounded-xl text-white hover:bg-yellow-700">
+                    Clear</a>
+                </li>
+        </div>
+        <div class="col-span-3">
+            {% for item in items %}
+        <div>
+          <a href="{% url 'items:item_detail' item.id %}" class="block shadow-lg rounded-xl overflow-hidden hover:shadow-2xl transition-shadow duration-300">
+            <div>
+              {% if item.image %}
+                <img src="{{ item.image.url }}" alt="{{ item.name }}" class="rounded-t-xl w-full h-auto">
+              {% endif %}
+            </div>
+
+            <div class="p-6 bg-white rounded-b-xl">
+              <h2 class="text-2xl">{{ item.name }}</h2>
+              <p class="text-gray-500 mt-2">{{ item.description }}</p>
+              <p class="text-gray-700 font-semibold mt-2">Price: ${{ item.price|floatformat:2 }}</p>
+              <p class="text-sm text-gray-500 mt-2">Category: {{ item.category.name }}</p>
+            </div>
+          </a>
+        </div>
+      {% empty %}
+        <p>No items available.</p>
+      {% endfor %}
+        </div>
+              
+        
+    </div> 
+
+
+{% endblock %}
